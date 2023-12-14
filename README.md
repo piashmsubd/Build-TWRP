@@ -55,7 +55,7 @@
 | Name | Description | Example |
 | ------------ | -------------------- | ------------ |
 | `MANIFEST_URL` | Source address | https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git |
-| `MANIFEST_BRANCH` | Source branch | twrp-12.1 |
+| `MANIFEST_BRANCH` | Source branch | twrp-11 |
 | `DEVICE_TREE_URL` | Device address | https://github.com/SUFandom/A12-Exynos-recovery-devtree|
 | `DEVICE_TREE_BRANCH` | Device branch | UA-aug (there's also UA-aug-fbe) |
 | `DEVICE_PATH` | Device location | device/samsung/a12s |
