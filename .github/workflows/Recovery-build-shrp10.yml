@@ -21,7 +21,7 @@ on:
       DEVICE_TREE_BRANCH:
         description: 'DEVICE_TREE_BRANCH'
         required: true
-        default: 'UA-aug'
+        default: 'UA-aug-310'
       DEVICE_PATH:
         description: 'DEVICE_PATH'
         required: true
