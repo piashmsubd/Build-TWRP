@@ -48,7 +48,7 @@ on:
       MAKEFILE_NAME:
         description: 'MAKEFILE_NAME'
         required: true
-        default: 'omni_a12s'
+        default: 'twrp_a12s'
       BUILD_TARGET:
         description: 'BUILD_TARGET'
         required: true
