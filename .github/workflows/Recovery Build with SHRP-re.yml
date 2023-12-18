@@ -79,7 +79,7 @@ jobs:
       - name: Sync Minimal Manifest
         run: |
           cd shrp
-          repo init --depth=1 -u https://github.com/SHRP/manifest.git -b ${{ inputs.MANIFEST_BRANCH }}
+          repo init --depth=1 -u https://github.com/SUFandom/shrp-manifest -b ${{ inputs.MANIFEST_BRANCH }}
           
       - name: Sync Source
         run: |
