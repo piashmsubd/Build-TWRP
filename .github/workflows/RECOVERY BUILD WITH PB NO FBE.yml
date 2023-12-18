@@ -136,13 +136,13 @@ jobs:
         git clone ${{ github.event.inputs.COMMON_TREE_URL }} -b ${{ github.event.inputs.DEVICE_TREE_BRANCH }} ./${{ github.event.inputs.COMMON_PATH }}
       working-directory: ${{ steps.pwd.outputs.workspace-folder }}
 
-    - name: Check Build Tree
-      uses: haya14busa/action-cond@v1
-      id: buildtree
-      with:
-        cond: ${{ github.event.inputs.MANIFEST_BRANCH == 'twrp-11' || github.event.inputs.MANIFEST_BRANCH == 'twrp-12.1' }}
-        if_true: twrp
-        if_false: omni
+    # - name: Check Build Tree
+    #   uses: haya14busa/action-cond@v1
+    #   id: buildtree
+    #   with:
+    #     cond: ${{ github.event.inputs.MANIFEST_BRANCH == 'twrp-11' || github.event.inputs.MANIFEST_BRANCH == 'twrp-12.1'  || github.event.inputs.MANIFEST_BRANCH == 'android-11.0' || github.event.inputs.MANIFEST_BRANCH == 'android-10.0' }}
+    #     if_true: twrp
+    #     if_false: omni
 
     - name: Sync Device Dependencies
       run: |
