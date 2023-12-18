@@ -1,4 +1,4 @@
-name: SkyHawk-RP Builder
+name: SkyHawk-RP Builder - A12 EXYNOS - NO FBE
 on:
   workflow_dispatch:
     inputs:
