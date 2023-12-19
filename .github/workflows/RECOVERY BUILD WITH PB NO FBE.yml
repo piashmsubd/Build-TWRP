@@ -12,7 +12,7 @@ on:
             - 'https://github.com/PitchBlackRecoveryDevices/manifest_pb'
             - 'https://github.com/PitchBlackRecoveryProject/manifest_pb'
       MANIFEST_BRANCH:
-        description: 'MANIFEST_BRANCH'
+        description: 'MANIFEST_BRANCH (TWRP for PB_DEVICES)'
         required: true
         default: 'android-10.1'
         type: choice
