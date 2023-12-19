@@ -27,6 +27,7 @@ on:
           - 'android-10.0'
           - 'android-11.0'
           - 'android-12.1'
+          - 'android-12.1-twrp'
       DEVICE_TREE_URL:
         description: 'DEVICE_TREE_URL'
         required: true
