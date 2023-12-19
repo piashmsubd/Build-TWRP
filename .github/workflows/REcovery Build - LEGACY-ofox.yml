@@ -1,0 +1,147 @@
+name: Recovery Build with Legacy
+
+on:
+    workflow_dispatch:
+        inputs:
+          SYNC_URL:
+            description: 'SYNC_URL'
+            required: true
+            default: 'https://gitlab.com/OrangeFox/sync.git'
+          SYNC_FILE:
+            description: 'Sync File'
+            required: true
+            default: 'legacy/orangefox_sync_legacy.sh'
+            type: choice
+            options:
+                - 'legacy/orangefox_sync_legacy.sh'
+                - 'orangefox_sync.sh'
+          MANIFEST_BRANCH:
+            description: 'MANIFEST_BRANCH'
+            required: true
+            default: '10.0'
+          DEVICE_TREE_GIT:
+            description: 'DEVICE_TREE_URL'
+            required: true
+            default: 'https://github.com/SUFandom/A12-Exynos-recovery-devtree'
+          DEVICE_TREE_BRANCH:
+            description: 'DEVICE_TREE_BRANCH'
+            required: true
+            default: 'UA-aug-ofox'
+          DEVICE_PATH:
+            description: 'DEVICE_PATH'
+            required: true
+            default: 'device/samsung/a12s'
+          COMMON_TREE_URL:
+            description: 'COMMON_TREE_URL (if no common tree, leave blank)'
+            required: false
+          COMMON_PATH:
+            description: 'COMMON_PATH (if no common tree, leave blank)'
+            required: false
+          DEVICE_NAME:
+            description: 'DEVICE_NAME'
+            required: true
+            default: 'a12s'
+          MAKEFILE_NAME:
+            description: 'MAKEFILE_NAME'
+            required: true
+            default: 'twrp_a12s'
+          BUILD_TARGET:
+            description: 'BUILD_TARGET'
+            required: true
+            default: 'recovery'
+
+jobs:
+    Building-Recovery:
+        if: github.event.repository.owner.id == github.event.sender.id
+        runs-on: ubuntu-latest
+        permissions:
+          contents: write
+        steps:
+
+
+        # According to someone, checking out is not necessary but its ok
+        - name: Check Out
+          uses: actions/checkout@v3
+
+          # Purge unecessary files
+        - name: Cleanup
+          uses: rokibhasansagar/slimhub_actions@main
+
+          # Let github be informed
+        - name: Initialize workspace
+          run: |
+            mkdir workspace
+            cd workspace
+            echo "workspace-folder=$(pwd)" >> $GITHUB_OUTPUT
+          id: pwd
+
+            # Prepare
+        - name: Prepare the build environment
+          run: |
+            sudo apt install git aria2 -y
+            git clone https://gitlab.com/OrangeFox/misc/scripts
+            cd scripts
+            sudo bash setup/android_build_env.sh
+            sed -i 's/cd -/cd ../g' setup/install_android_sdk.sh
+            sudo bash setup/install_android_sdk.sh
+          working-directory: ${{ steps.pwd.outputs.workspace-folder }}
+        
+
+        # 
+        - name: Sync OrangeFox sources and minimal manifest
+          run: |
+            cd ${{ steps.pwd.outputs.workspace-folder }}
+            git clone ${{ github.event.inputs.SYNC_URL }}
+            cd sync/legacy
+        
+        - name: Sync Source
+          run: |
+              cd ~/ofrp/sync
+              ./${{ inputs.SYNC_FILE }} --branch ${{ inputs.MANIFEST_BRANCH }} -path ${{ steps.pwd.outputs.workspace-folder }}/fox_${{ github.event.inputs.MANIFEST_BRANCH }}
+          working-directory: ${{ steps.pwd.outputs.workspace-folder }}
+        
+        - name: Set Swap Space
+          uses: pierotofy/set-swap-space@master
+          with:
+            swap-size-gb: 14
+        
+
+        - name: Compile Custom Recovery 
+          run: |
+            cd ~/ofrp
+            source build/envsetup.sh
+            export ALLOW_MISSING_DEPENDENCIES=true
+            export FOX_USE_TWRP_RECOVERY_IMAGE_BUILDER=1
+            export FOX_AB_DEVICE=1
+            export ALLOW_MISSING_DEPENDENCIES=true
+            export FOX_VANILLA_BUILD=1
+            export LC_ALL="C"
+            lunch ${{ inputs.MAKEFILE_NAME }}-eng && make clean && mka ${{ inputs.BUILD_TARGET }}image -j$(nproc --all)
+         
+          working-directory: ${{ steps.pwd.outputs.workspace-folder }}
+          continue-on-error: true
+        
+        - name: Check the output directory before uploading
+          run: |
+            ls -al ${{ steps.pwd.outputs.workspace-folder }}/fox_${{ github.event.inputs.MANIFEST_BRANCH }}/out/target/product/
+            echo
+            ls -al ${{ steps.pwd.outputs.workspace-folder }}/fox_${{ github.event.inputs.MANIFEST_BRANCH }}/out/target/product/${{ github.event.inputs.DEVICE_NAME }}/
+        
+        - name: Upload to Release
+          uses: softprops/action-gh-release@v1
+          with:
+            files: |
+                ${{ steps.pwd.outputs.workspace-folder }}/fox_${{ github.event.inputs.MANIFEST_BRANCH }}/out/target/product/${{ github.event.inputs.DEVICE_NAME }}/*.img
+                ${{ steps.pwd.outputs.workspace-folder }}/fox_${{ github.event.inputs.MANIFEST_BRANCH }}/out/target/product/${{ github.event.inputs.DEVICE_NAME }}/*.zip
+            name: ${{ github.event.inputs.DEVICE_NAME }}-${{ github.run_id }}
+            tag_name: ${{ github.run_id }}
+            body: |
+                Manifest: ${{ github.event.inputs.MANIFEST_BRANCH }}
+                Device: ${{ github.event.inputs.DEVICE_NAME }}
+                Target: ${{ github.event.inputs.BUILD_TARGET }}
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+        
+        
+        
