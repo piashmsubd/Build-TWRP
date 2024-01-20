@@ -11,6 +11,7 @@ on:
         options:
             - 'https://github.com/PitchBlackRecoveryDevices/manifest_pb'
             - 'https://github.com/PitchBlackRecoveryProject/manifest_pb'
+            - 'https://github.com/SUFandom/manifest_pb'
       MANIFEST_BRANCH:
         description: 'MANIFEST_BRANCH (TWRP for PB_DEVICES)'
         required: true
