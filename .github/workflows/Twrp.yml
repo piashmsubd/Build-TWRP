@@ -113,6 +113,7 @@ jobs:
           
     - name: Repo Sync
       run: |
+        rm -rf .repo/manifest.xml
         repo sync -j$(nproc --all) --force-sync
       working-directory: workspace
       
