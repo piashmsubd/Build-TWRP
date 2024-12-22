@@ -102,7 +102,7 @@ jobs:
         echo "workspace-folder=$(pwd)" >> $GITHUB_OUTPUT
         git config --global user.email "gooogleabal@gmail.com"
         git config --global user.name "piashmsubd"
-        repo init --depth=1 -u https://github.com/piashmsubd/android_device_nubia_NX669J -b android-12.1.0_r4
+        repo init --depth=1 -u https://github.com/piashmsubd/android_manifest -b main
         # Adding roomservice.xml
         mkdir -p .repo/local_manifests
         echo '<manifest>
