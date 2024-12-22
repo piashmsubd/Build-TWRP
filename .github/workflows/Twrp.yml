@@ -102,7 +102,7 @@ jobs:
         echo "workspace-folder=$(pwd)" >> $GITHUB_OUTPUT
         git config --global user.email "gooogleabal@gmail.com"
         git config --global user.name "piashmsubd"
-        repo init --depth=1 -u https://github.com/piashmsubd/android_manifest -b main
+        repo init --depth=1 -u https://github.com/piashmsubd/android_manifest -b master
         # Adding roomservice.xml
         mkdir -p .repo/local_manifests
         echo '<manifest>
@@ -113,7 +113,6 @@ jobs:
           
     - name: Repo Sync
       run: |
-        rm -rf .repo/manifest.xml
         repo sync -j$(nproc --all) --force-sync
       working-directory: workspace
       
