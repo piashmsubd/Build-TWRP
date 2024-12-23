@@ -94,6 +94,12 @@ jobs:
         curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
         chmod a+x ~/bin/repo
         sudo ln -sf ~/bin/repo /usr/bin/repo
+       #!/bin/bash
+       # Clean up workspace
+       repo forall -c 'git clean -fdx'
+       repo forall -c 'git reset --hard'
+       rm -rf out/
+       make clobber
       
     - name: Initialize repo
       run: |
